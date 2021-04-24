@@ -2,6 +2,7 @@ package com.securityinnovation.urlshortner.service.impl;
 
 import com.google.common.hash.Hashing;
 import com.securityinnovation.urlshortner.entity.UrlMapping;
+import com.securityinnovation.urlshortner.enums.messages.constraint.UrlConstraint;
 import com.securityinnovation.urlshortner.enums.messages.error.ErrorMessages;
 import com.securityinnovation.urlshortner.enums.messages.user.ShortenUrlMessage;
 import com.securityinnovation.urlshortner.exception.AppException;
@@ -12,10 +13,12 @@ import com.securityinnovation.urlshortner.repository.UrlMappingRepository;
 import com.securityinnovation.urlshortner.service.UrlShortnerService;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <h1>UrlShortenServiceImpl</h1>
@@ -77,6 +80,80 @@ public class UrlShortenServiceImpl implements UrlShortnerService {
     if(urlMapping.isPresent())
       fullUrl = urlMapping.get().getFullUrl();
     return fullUrl;
+  }
+
+  /**
+   * @param userId - user id to retrieve all shorted url of that user
+   * @return - list of all urls shortened by user
+   */
+  @Override
+  public List<ShortenUrlResponse> getUrlMappings(Long userId) {
+    List<UrlMapping> urlMappings = urlRepository.findByCreatedBy(userId);
+    return dtoMapper.convertEntityListToDTOList(urlMappings, ShortenUrlResponse.class);
+  }
+
+  /**
+   * @param urlMappingId - url mapping id
+   * @param userId - logged in user's id
+   * @return - returns shortened url mapping having given id
+   */
+  @Override
+  public ShortenUrlResponse getUrlMappingById(Long urlMappingId, Long userId) {
+    // get stored url mapping
+    Optional<UrlMapping> urlMappingOptional = urlRepository.findByIdAndCreatedBy(urlMappingId, userId);
+
+    //throw error if url mapping is not available for current user
+    if(!urlMappingOptional.isPresent()){
+      throw new AppException(ErrorMessages.URL_MAPPING_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    return dtoMapper.convertToDto(urlMappingOptional.get(), ShortenUrlResponse.class);
+  }
+
+
+  /**
+   * @param urlMappingId - url mapping id to update the url
+   * @param newShortenUrl - new shortened url
+   * @param userId - current user id
+   * @return - updated mapping for shorten url
+   */
+  @Override
+  public ShortenUrlResponse updateShortenedUrl(Long urlMappingId, String newShortenUrl, Long userId) {
+
+    // get previously stored url mapping
+    Optional<UrlMapping> urlMappingOptional = urlRepository.findByIdAndCreatedBy(urlMappingId, userId);
+
+    //throw error if url mapping is not available for current user
+    if(!urlMappingOptional.isPresent()){
+      throw new AppException(ErrorMessages.URL_MAPPING_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    UrlMapping urlMapping = urlMappingOptional.get();
+
+    //only store new url if it is not same as old one
+    if(!urlMapping.getShortUrl().equals(newShortenUrl)){
+      this.checkIfShortUrlIsAvailable(newShortenUrl);
+      urlMapping.setShortUrl(newShortenUrl);
+      urlMapping = urlRepository.save(urlMapping);
+    } else if(urlMapping.getShortUrl().length() > UrlConstraint.SHORT_URL_MAX_LENGTH.getValue()) {
+      //throw exception if provided short url contains more than 15 characters
+      throw new AppException(ErrorMessages.SHORT_URL_LENGTH_EXCEEDED, HttpStatus.BAD_REQUEST);
+    }
+
+    return dtoMapper.convertToDto(urlMapping, ShortenUrlResponse.class);
+  }
+
+  /**
+   * @param mappingId - url mapping id
+   * @param userId - logged in user's id
+   */
+  @Override
+  @Transactional
+  public void deleteUrlMapping(Long mappingId, Long userId) {
+    Integer noOfRecordsDeleted = urlRepository.deleteByIdAndCreatedBy(mappingId, userId);
+    if(noOfRecordsDeleted==0){
+      throw new AppException(ErrorMessages.URL_MAPPING_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
   }
 
   /**

@@ -30,9 +30,8 @@ public class UrlMapping extends UserDateAudit {
   @Column(name="full_url")
   private String fullUrl;
 
-  @NaturalId
+  @NaturalId(mutable=true)
   @NotBlank
-  @Email
   @Column(name="shorten_url")
   private String shortUrl;
 

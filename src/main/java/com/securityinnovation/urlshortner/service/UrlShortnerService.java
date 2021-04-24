@@ -2,6 +2,7 @@ package com.securityinnovation.urlshortner.service;
 
 import com.securityinnovation.urlshortner.payload.request.ShortenUrlRequest;
 import com.securityinnovation.urlshortner.payload.response.ShortenUrlResponse;
+import java.util.List;
 
 /**
  * <h1>UrlShortnerService</h1>
@@ -17,4 +18,12 @@ public interface UrlShortnerService {
   ShortenUrlResponse shortenTheUrl(ShortenUrlRequest shortenUrlRequest, Long userId);
 
   String getOriginalUrl(String shortenUrl);
+
+  List<ShortenUrlResponse> getUrlMappings(Long userId);
+
+  ShortenUrlResponse updateShortenedUrl(Long urlMappingId, String newShortenUrl, Long userId);
+
+  void deleteUrlMapping(Long mappingId, Long userId);
+
+  ShortenUrlResponse getUrlMappingById(Long urlMappingId, Long userId);
 }

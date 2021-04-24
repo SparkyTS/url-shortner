@@ -1,10 +1,11 @@
 package com.securityinnovation.urlshortner.exception;
 
+import javax.validation.ConstraintViolationException;
+
 import com.securityinnovation.urlshortner.payload.response.ApiResponse;
 import java.util.List;
 import java.util.Optional;
 import org.modelmapper.spi.ErrorMessage;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,19 +30,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 public class ExceptionController {
 
-//  @ExceptionHandler(MethodArgumentNotValidException.class)
-//  public ResponseEntity<ApiResponse> handleMethodArgumentNotValid(
-//    MethodArgumentNotValidException methodArgumentNotValidException) {
-//    BindingResult result = methodArgumentNotValidException.getBindingResult();
-//    final List<FieldError> fieldErrors = result.getFieldErrors();
-//    String error = "Not a valid request";
-//    if (!fieldErrors.isEmpty()) {
-//      FieldError fieldError = fieldErrors.get(0);
-//      error = "Field '" + fieldError.getField() + "' " + fieldError.getDefaultMessage();
-//    }
-//    return ResponseEntity.ok(new ApiResponse(Boolean.FALSE, error));
-//  }
-
   /**
    * <h1>handleAppException</h1>
    * <p>
@@ -53,14 +41,12 @@ public class ExceptionController {
    */
   @ExceptionHandler(AppException.class)
   public ResponseEntity<ApiResponse> handleAppException(AppException appException) {
-    LoggerFactory.getLogger(this.getClass()).trace("nooo This is me");
-
     return new ResponseEntity<>(new ApiResponse(Boolean.FALSE, appException.getMessage()),
       appException.getHttpStatus());
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  ResponseEntity<ApiResponse> handleConstraintViolationException(
+  ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(
     MethodArgumentNotValidException methodArgumentNotValidException) {
 
     BindingResult result = methodArgumentNotValidException.getBindingResult();
@@ -78,6 +64,22 @@ public class ExceptionController {
   }
 
   /**
+   * <h1>ConstraintViolationException</h1>
+   * <p>
+   * Handles app exception and returns valid error response
+   * </p>
+   *
+   * @param constraintViolationException - constraint violation exception
+   * @return ResponseEntity<ApiResponse> - response with valid http status and error message
+   */
+  @ExceptionHandler(ConstraintViolationException.class)
+  ResponseEntity<ApiResponse> handleConstraintViolationException(
+    ConstraintViolationException constraintViolationException) {
+    return new ResponseEntity<>(new ApiResponse(Boolean.FALSE,  constraintViolationException.getMessage()),
+      HttpStatus.BAD_REQUEST);
+  }
+
+  /**
    * <h1>handleUserNotFoundException</h1>
    * <p>
    * Handles user not found exception and returns valid error response
@@ -88,7 +90,6 @@ public class ExceptionController {
    */
   @ExceptionHandler(UsernameNotFoundException.class)
   ResponseEntity<ApiResponse> handleUserNotFoundException(UsernameNotFoundException usernameNotFoundException) {
-    LoggerFactory.getLogger(this.getClass()).trace("This is me");
     return new ResponseEntity<>(new ApiResponse(Boolean.FALSE, usernameNotFoundException.getMessage()),
       HttpStatus.NOT_FOUND);
   }
