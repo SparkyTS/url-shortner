@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: secutiry-innovation-url-shortner
+
+  profiles:
+    active: "dev"
