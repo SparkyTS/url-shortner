@@ -6,14 +6,12 @@ import com.securityinnovation.urlshortner.payload.response.UserSummaryResponse;
 import com.securityinnovation.urlshortner.security.CurrentUser;
 import com.securityinnovation.urlshortner.security.UserPrincipal;
 import com.securityinnovation.urlshortner.service.UserService;
-import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * <h1>UserController</h1>
@@ -26,7 +24,6 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 @RequestMapping("/api/v1/user")
-@Api(tags = "user")
 public class UserController {
 
   final UserService userService;
@@ -41,7 +38,7 @@ public class UserController {
    */
   @GetMapping("me")
   @PreAuthorize("hasRole('USER')")
-  public ResponseEntity<ApiResponse> getCurrentUser(@ApiIgnore @CurrentUser UserPrincipal currentUser) {
+  public ResponseEntity<ApiResponse> getCurrentUser(@CurrentUser UserPrincipal currentUser) {
     UserSummaryResponse userSummary = new UserSummaryResponse(currentUser.getId(), currentUser.getUsername(), currentUser.getName(), currentUser.getEmail());
     return ResponseEntity.ok(new ApiResponse(true, UserMessage.DETAILS_OBTAINED, userSummary));
   }

@@ -10,7 +10,6 @@ import com.securityinnovation.urlshortner.payload.response.UserAuthenticationRes
 import com.securityinnovation.urlshortner.repository.UserRepository;
 import com.securityinnovation.urlshortner.security.JWTTokenProvider;
 import com.securityinnovation.urlshortner.service.AuthService;
-import io.swagger.annotations.Api;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/auth")
 @Validated
-@Api(tags = "auth")
 public class AuthController {
 
   final AuthService authService;

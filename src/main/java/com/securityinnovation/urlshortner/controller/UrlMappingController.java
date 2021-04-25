@@ -9,7 +9,6 @@ import com.securityinnovation.urlshortner.payload.response.ShortenUrlResponse;
 import com.securityinnovation.urlshortner.security.CurrentUser;
 import com.securityinnovation.urlshortner.security.UserPrincipal;
 import com.securityinnovation.urlshortner.service.UrlShortnerService;
-import io.swagger.annotations.Api;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * <h1>UrlMappingController</h1>
@@ -37,7 +35,6 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/api/v1/urls")
 @Validated
-@Api(tags = "urls-shortening")
 public class UrlMappingController {
 
   final UrlShortnerService urlShortnerService;
@@ -52,8 +49,7 @@ public class UrlMappingController {
    */
   @PostMapping
   @PreAuthorize("hasRole('USER')")
-  public ResponseEntity<ApiResponse> shortenTheUrl(@Valid @RequestBody ShortenUrlRequest shortenUrlRequest,
-    @ApiIgnore @CurrentUser UserPrincipal userPrincipal) {
+  public ResponseEntity<ApiResponse> shortenTheUrl(@Valid @RequestBody ShortenUrlRequest shortenUrlRequest, @CurrentUser UserPrincipal userPrincipal) {
     ShortenUrlResponse shortenUrlResponse = urlShortnerService.shortenTheUrl(shortenUrlRequest, userPrincipal.getId());
     return new ResponseEntity<>((new ApiResponse(Boolean.TRUE, ShortenUrlMessage.URL_SHORTENED, shortenUrlResponse)),
       HttpStatus.CREATED);
@@ -65,7 +61,7 @@ public class UrlMappingController {
    */
   @GetMapping
   @PreAuthorize("hasRole('USER')")
-  public ResponseEntity<ApiResponse> getShortenUrlMappings(@ApiIgnore @CurrentUser UserPrincipal userPrincipal) {
+  public ResponseEntity<ApiResponse> getShortenUrlMappings(@CurrentUser UserPrincipal userPrincipal) {
     List<ShortenUrlResponse> urlMappings = urlShortnerService.getUrlMappings(userPrincipal.getId());
     return ResponseEntity.ok(
       new ApiResponse(Boolean.TRUE, ShortenUrlMessage.URL_MAPPINGS_RETRIEVED_SUCCESSFULLY, urlMappings));
@@ -79,7 +75,7 @@ public class UrlMappingController {
   @GetMapping("{urlMappingId}")
   @PreAuthorize("hasRole('USER')")
   public ResponseEntity<ApiResponse> getShortenUrlMappingById(@PathVariable Long urlMappingId,
-    @ApiIgnore @CurrentUser UserPrincipal userPrincipal) {
+    @CurrentUser UserPrincipal userPrincipal) {
     ShortenUrlResponse urlMapping = urlShortnerService.getUrlMappingById(urlMappingId, userPrincipal.getId());
     return ResponseEntity.ok(
       new ApiResponse(Boolean.TRUE, ShortenUrlMessage.URL_MAPPING_RETRIEVED_SUCCESSFULLY, urlMapping));
@@ -94,7 +90,7 @@ public class UrlMappingController {
   @PatchMapping("/{urlMappingId}/{newShortenUrl}")
   @PreAuthorize("hasRole('USER')")
   public ResponseEntity<ApiResponse> updateShortenedEndpoint(@PathVariable Long urlMappingId,
-    @PathVariable String newShortenUrl, @ApiIgnore @CurrentUser UserPrincipal userPrincipal) {
+    @PathVariable String newShortenUrl, @CurrentUser UserPrincipal userPrincipal) {
     ShortenUrlResponse shortenUrlResponse = urlShortnerService.updateShortenedUrl(urlMappingId, newShortenUrl,
       userPrincipal.getId());
     return ResponseEntity.ok(
