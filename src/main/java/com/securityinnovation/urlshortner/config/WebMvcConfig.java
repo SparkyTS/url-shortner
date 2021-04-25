@@ -7,6 +7,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * <h1>WebMvcConfig</h1>
  * <p>Adds CORS(Cross-Origin Resource Sharing) configuration to app</p>
+ * @author Tanay
+ * @version 1.0
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
