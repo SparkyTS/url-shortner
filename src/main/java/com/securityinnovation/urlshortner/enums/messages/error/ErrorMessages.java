@@ -20,7 +20,8 @@ public enum ErrorMessages implements Message {
   SHORT_URL_NOT_AVAILABLE("The shorten url endpoint provided is already in use. Please try some different url endpoint."),
   SHORT_URL_NOT_VALID("Provided shorten url is not present. Please provide valid shortened url !"),
   URL_MAPPING_NOT_FOUND("Can not update as url mapping is not available"),
-  SHORT_URL_LENGTH_EXCEEDED("Short url with more than 15 letters is not allowed");
+  SHORT_URL_LENGTH_EXCEEDED("Short url with more than 15 letters is not allowed"),
+  INVALID_EMAIL("Please enter a valid email");
 
   private String message;
 

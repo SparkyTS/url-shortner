@@ -42,7 +42,7 @@ public class UserController {
   @GetMapping("me")
   @PreAuthorize("hasRole('USER')")
   public ResponseEntity<ApiResponse> getCurrentUser(@ApiIgnore @CurrentUser UserPrincipal currentUser) {
-    UserSummaryResponse userSummary = new UserSummaryResponse(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
+    UserSummaryResponse userSummary = new UserSummaryResponse(currentUser.getId(), currentUser.getUsername(), currentUser.getName(), currentUser.getEmail());
     return ResponseEntity.ok(new ApiResponse(true, UserMessage.DETAILS_OBTAINED, userSummary));
   }
 

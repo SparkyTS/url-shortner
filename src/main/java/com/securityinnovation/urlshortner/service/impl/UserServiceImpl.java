@@ -6,6 +6,7 @@ import com.securityinnovation.urlshortner.exception.AppException;
 import com.securityinnovation.urlshortner.repository.UserRepository;
 import com.securityinnovation.urlshortner.service.UserService;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,9 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public void validateUniqueEmail(String email) {
+    if(!EmailValidator.getInstance().isValid(email)){
+      throw new AppException(ErrorMessages.INVALID_EMAIL, HttpStatus.BAD_REQUEST);
+    }
     if (userRepository.existsByEmail(email)) {
       throw new AppException(ErrorMessages.EMAIL_ALREADY_TAKEN, HttpStatus.BAD_REQUEST);
     }

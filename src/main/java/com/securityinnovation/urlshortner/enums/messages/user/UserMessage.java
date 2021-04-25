@@ -14,7 +14,10 @@ import com.securityinnovation.urlshortner.enums.messages.Message;
 public enum UserMessage implements Message {
   DETAILS_OBTAINED("User details obtained successfully !"),
   USERNAME_AVAILABLE("Yes, username is available !"),
-  EMAIL_AVAILABLE("Yes, email is available !");
+  EMAIL_AVAILABLE("Yes, email is available !"),
+  LOGIN_SUCCESSFUL("Logged in successfully !"),
+  SIGNUP_SUCCESSFUL("Signed up successfully !"),
+  REFRESH_CREDS("Token refreshed successfully !");
 
   private String message;
 

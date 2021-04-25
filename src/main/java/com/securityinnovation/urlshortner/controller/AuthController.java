@@ -2,8 +2,10 @@ package com.securityinnovation.urlshortner.controller;
 
 import javax.validation.Valid;
 
+import com.securityinnovation.urlshortner.enums.messages.user.UserMessage;
 import com.securityinnovation.urlshortner.payload.request.UserLoginRequest;
 import com.securityinnovation.urlshortner.payload.request.UserSignUpRequest;
+import com.securityinnovation.urlshortner.payload.response.ApiResponse;
 import com.securityinnovation.urlshortner.payload.response.UserAuthenticationResponse;
 import com.securityinnovation.urlshortner.repository.UserRepository;
 import com.securityinnovation.urlshortner.security.JWTTokenProvider;
@@ -47,8 +49,9 @@ public class AuthController {
    * @return access token and refresh token for further authentication purpose
    */
   @PostMapping("signIn")
-  public ResponseEntity<UserAuthenticationResponse> signInUser(@Valid @RequestBody UserLoginRequest loginRequest) {
-    return ResponseEntity.ok(authService.signInUser(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
+  public ResponseEntity<ApiResponse> signInUser(@Valid @RequestBody UserLoginRequest loginRequest) {
+    UserAuthenticationResponse userAuthenticationResponse = authService.signInUser(loginRequest.getUsernameOrEmail(), loginRequest.getPassword());
+    return ResponseEntity.ok(new ApiResponse(Boolean.TRUE, UserMessage.LOGIN_SUCCESSFUL, userAuthenticationResponse));
   }
 
   /**
@@ -56,10 +59,10 @@ public class AuthController {
    * @return access token and refresh token for further authentication purpose
    */
   @PostMapping("signUp")
-  public ResponseEntity<UserAuthenticationResponse> signUpUser(@Valid @RequestBody UserSignUpRequest signUpRequest) {
-    return new ResponseEntity<>(
-      authService.signUpUser(signUpRequest.getName(), signUpRequest.getUsername(), signUpRequest.getEmail(),
-        signUpRequest.getPassword()), HttpStatus.CREATED);
+  public ResponseEntity<ApiResponse> signUpUser(@Valid @RequestBody UserSignUpRequest signUpRequest) {
+    UserAuthenticationResponse userAuthenticationResponse = authService.signUpUser(signUpRequest.getName(), signUpRequest.getUsername(), signUpRequest.getEmail(),
+      signUpRequest.getPassword());
+    return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, UserMessage.SIGNUP_SUCCESSFUL, userAuthenticationResponse),HttpStatus.CREATED);
   }
 
   /**
@@ -67,8 +70,9 @@ public class AuthController {
    * @return new set of access token and refresh token for further authentication process
    */
   @PostMapping("refreshToken")
-  public ResponseEntity<UserAuthenticationResponse> getRefreshToken(
+  public ResponseEntity<ApiResponse> getRefreshToken(
     @RequestBody UserAuthenticationResponse userAuthenticationResponse) {
-    return ResponseEntity.ok(authService.getRefreshToken(userAuthenticationResponse.getRefreshToken()));
+    UserAuthenticationResponse userAuthenticationResponse1 = authService.getRefreshToken(userAuthenticationResponse.getRefreshToken());
+    return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, UserMessage.REFRESH_CREDS, userAuthenticationResponse1),HttpStatus.CREATED);
   }
 }
