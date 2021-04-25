@@ -58,7 +58,11 @@ public class UrlShortenServiceImpl implements UrlShortnerService {
     }
 
     if(shortUrl!=null && !shortUrl.isEmpty()){
-      //check availability of custom short url if it is provided
+      if(shortUrl.length() > UrlConstraint.SHORT_URL_MAX_LENGTH.getValue()) {
+        //throw exception if provided short url contains more than 15 characters
+        throw new AppException(ErrorMessages.SHORT_URL_LENGTH_EXCEEDED, HttpStatus.BAD_REQUEST);
+      }
+      //check availability of valid custom short url if it is provided
       this.checkIfShortUrlIsAvailable(shortUrl);
     }else{
       // shorten the url using hashing technique
@@ -88,7 +92,7 @@ public class UrlShortenServiceImpl implements UrlShortnerService {
    */
   @Override
   public List<ShortenUrlResponse> getUrlMappings(Long userId) {
-    List<UrlMapping> urlMappings = urlRepository.findByCreatedBy(userId);
+    List<UrlMapping> urlMappings = urlRepository.findByCreatedByOrderByCreatedAtDesc(userId);
     return dtoMapper.convertEntityListToDTOList(urlMappings, ShortenUrlResponse.class);
   }
 
@@ -128,16 +132,17 @@ public class UrlShortenServiceImpl implements UrlShortnerService {
       throw new AppException(ErrorMessages.URL_MAPPING_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    UrlMapping urlMapping = urlMappingOptional.get();
+    if(newShortenUrl.length() > UrlConstraint.SHORT_URL_MAX_LENGTH.getValue()) {
+      //throw exception if provided short url contains more than 15 characters
+      throw new AppException(ErrorMessages.SHORT_URL_LENGTH_EXCEEDED, HttpStatus.BAD_REQUEST);
+    }
 
+    UrlMapping urlMapping = urlMappingOptional.get();
     //only store new url if it is not same as old one
     if(!urlMapping.getShortUrl().equals(newShortenUrl)){
       this.checkIfShortUrlIsAvailable(newShortenUrl);
       urlMapping.setShortUrl(newShortenUrl);
       urlMapping = urlRepository.save(urlMapping);
-    } else if(urlMapping.getShortUrl().length() > UrlConstraint.SHORT_URL_MAX_LENGTH.getValue()) {
-      //throw exception if provided short url contains more than 15 characters
-      throw new AppException(ErrorMessages.SHORT_URL_LENGTH_EXCEEDED, HttpStatus.BAD_REQUEST);
     }
 
     return dtoMapper.convertToDto(urlMapping, ShortenUrlResponse.class);

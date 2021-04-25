@@ -15,7 +15,7 @@ public enum ErrorMessages implements Message {
 
   LOGIN_AGAIN("Please Log In Again !"),
   USERNAME_ALREADY_TAKEN("Username is already taken !"),
-  EMAIL_ALREADY_TAKEN("Email address is already in use !"),
+  EMAIL_ALREADY_TAKEN("Email address is already registered !"),
   SOMETHING_WENT_WRONG("Something went wrong !"),
   SHORT_URL_NOT_AVAILABLE("The shorten url endpoint provided is already in use. Please try some different url endpoint."),
   SHORT_URL_NOT_VALID("Provided shorten url is not present. Please provide valid shortened url !"),

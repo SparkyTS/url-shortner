@@ -11,7 +11,7 @@ public interface UrlMappingRepository extends JpaRepository<UrlMapping, Long> {
 
   Optional<UrlMapping> findByShortUrl(String shortUrl);
 
-  List<UrlMapping> findByCreatedBy(Long createdByUserId);
+  List<UrlMapping> findByCreatedByOrderByCreatedAtDesc(Long createdByUserId);
 
   Optional<UrlMapping> findByIdAndCreatedBy(Long urlMappingId , Long userId);
 
