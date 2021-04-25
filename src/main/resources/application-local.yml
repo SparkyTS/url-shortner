@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:memDb;DB_CLOSE_DELAY=-1
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    root: INFO
+    com.tanay.app: TRACE
+
+app:
+  jwtAccessTokenSecret: This-Is-Super-Secure-Key-For-JWT-By-Tanay-fsdfkjsdfsdk;jfsdkfksjldfklsdfl;jsdklf
+  jwtAccessTokenExpirationInMs: 3600000 #60 minutes
+  jwtRefreshTokenSecret: This-Is-Key-Secure-Tanay-For-JWT-By-fdsklfjsdklfsdklfjdslflsd;jfkdsfkl;sdjfklasnfklnsfsdklf
+  jwtRefRefreshTokenExpirationInMs: 2592000000 #30 days

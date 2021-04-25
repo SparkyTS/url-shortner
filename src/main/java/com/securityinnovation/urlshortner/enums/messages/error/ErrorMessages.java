@@ -21,7 +21,8 @@ public enum ErrorMessages implements Message {
   SHORT_URL_NOT_VALID("Provided shorten url is not present. Please provide valid shortened url !"),
   URL_MAPPING_NOT_FOUND("Can not update as url mapping is not available"),
   SHORT_URL_LENGTH_EXCEEDED("Short url with more than 15 letters is not allowed"),
-  INVALID_EMAIL("Please enter a valid email");
+  INVALID_EMAIL("Please enter a valid email"),
+  USER_NOT_FOUND("User not found with that access token");
 
   private String message;
 

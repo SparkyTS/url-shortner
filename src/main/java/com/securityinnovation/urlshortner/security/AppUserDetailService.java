@@ -2,7 +2,10 @@ package com.securityinnovation.urlshortner.security;
 
 
 import com.securityinnovation.urlshortner.entity.User;
+import com.securityinnovation.urlshortner.enums.messages.error.ErrorMessages;
+import com.securityinnovation.urlshortner.exception.AppException;
 import com.securityinnovation.urlshortner.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,7 +46,7 @@ public class AppUserDetailService implements UserDetailsService {
   public UserDetails loadUserById(Long id) {
     User user = userRepository
       .findById(id)
-      .orElseThrow(() -> new UsernameNotFoundException("User not found !"));
+      .orElseThrow(() -> new AppException(ErrorMessages.USER_NOT_FOUND, HttpStatus.BAD_REQUEST));
 
     return UserPrincipal.create(user);
   }

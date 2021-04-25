@@ -3,4 +3,4 @@ spring:
     name: secutiry-innovation-url-shortner
 
   profiles:
-    active: "dev"
+    active: local
