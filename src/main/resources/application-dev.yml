@@ -14,7 +14,7 @@ spring:
 logging:
   level:
     root: INFO
-    com.tanay.app: TRACE
+    com.securityinnovation.urlshortner: TRACE
 
 app:
   jwtAccessTokenSecret: This-Is-Super-Secure-Key-For-JWT-By-Tanay-fsdfkjsdfsdk;jfsdkfksjldfklsdfl;jsdklf
