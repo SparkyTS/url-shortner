@@ -5,7 +5,7 @@ package com.securityinnovation.urlshortner.mapper;
  * which will use {@link DtoMapper} to make the different
  * conversations between dto and entity
  *
- * @author MIT
+ * @author Tanay
  * @version 1.0
  */
 public interface DTOEntity {
